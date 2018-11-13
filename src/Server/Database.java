@@ -418,7 +418,7 @@ public class Database {
         
         try{
             a = db.createStatement();
-            øv = a.executeQuery("select * from cases,creates where cases.caseID = creates.caseid And creates.email = '"+per.getEmail()+"'");
+            øv = a.executeQuery("update cases set ,creates where cases.caseID = creates.caseid And creates.email = '"+per.getEmail()+"'");
  
             
             
@@ -478,26 +478,33 @@ public class Database {
                     component = øv.getString(5);
                     freeText = øv.getString(6);
                     test = øv.getString(7);
-                   
-                    
-                    
+
                     list.add(new Case(title, caseID, budget, deadline, component, redgjordt, freeText));
-                    
                 }
-                
-            
         } catch (Exception ex) {
             
         }
-           
-       
-      
           return list;
+      }
+           
+      public void EvaluateCase(Case f){
+           Statement a = null;
+           ResultSet øv = null;
+          
+           try{
+            a = db.createStatement();
+            øv = a.executeQuery("update cases set boolean = '1' where caseid = '"+f.getId()+"'");
+ 
+            
+           }catch (Exception ex) {
+            
+        }
           
           
           
       }
-           
+      
+      
           
         public static void main(String[] args) {
         Database a = new Database();
