@@ -418,7 +418,7 @@ public class Database {
         
         try{
             a = db.createStatement();
-            øv = a.executeQuery("update cases set ,creates where cases.caseID = creates.caseid And creates.email = '"+per.getEmail()+"'");
+            øv = a.executeQuery("select * from cases,creates where cases.caseID = creates.caseid And creates.email = '"+per.getEmail()+"'");
  
             
             
@@ -509,11 +509,19 @@ public class Database {
         public static void main(String[] args) {
         Database a = new Database();
         
-        List<Case> test = a.getNotEvaluadedCase();
         
-        for(int i = 0; i<test.size();i++){
-            System.out.println(test.get(i).toString());
+        Customer s = new Customer("henrik", "1234", "gretoisvej 12, 5500 middelfart", 3215422, "henrik@gmail.com", "henrik jens jensen");
+        List<Case> ss  = a.getSpecificUserCaseList(s);
+        
+        
+        for (int i = 0; i < ss.size(); i++) {
+            System.out.println(ss.get(i).toString());
         }
+//        List<Case> test = a.getNotEvaluadedCase();
+//        
+//        for(int i = 0; i<test.size();i++){
+//            System.out.println(test.get(i).toString());
+//        }
                 
         
         

@@ -104,6 +104,12 @@ public class SocketServer extends Thread {
                    getAllNotEvaluatetCases();
                 }
                 
+                else if(request.equals("13")){
+                    EvaluateCase();
+                }
+                
+            
+                
 
                 
                 
@@ -233,7 +239,13 @@ public class SocketServer extends Thread {
            
            
            
-       }       
+       }  
+       
+       public void EvaluateCase() throws IOException, ClassNotFoundException{
+           Case a = (Case) oin.readObject();
+           db.EvaluateCase(a);
+       }
+       
        
        
     
