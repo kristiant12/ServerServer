@@ -107,6 +107,12 @@ public class SocketServer extends Thread {
                 else if(request.equals("13")){
                     EvaluateCase();
                 }
+                else if(request.equals("15")){
+                    getAllEvaluatetCases();
+                    
+                }else if(request.equals("16")){
+                    deleteUser();
+                }
                 
             
                 
@@ -205,7 +211,7 @@ public class SocketServer extends Thread {
     }
        public void DeleteCase() throws IOException, ClassNotFoundException{
         Case a = (Case) oin.readObject();
-        db.deleteCase(a);
+        db.deleteCaseInCaseAndCreates(a);
        // System.out.println(a.toString());
     }
 
@@ -246,7 +252,18 @@ public class SocketServer extends Thread {
            db.EvaluateCase(a);
        }
        
+       public void getAllEvaluatetCases() throws IOException, ClassNotFoundException{
+           Case a = (Case) oin.readObject();
+           List<Case> eval = db.getEvaluetaCase(a);
+           mapObjectOutputStream.writeObject(eval);
+       } 
        
+       public void deleteUser() throws IOException, ClassNotFoundException{
+           User a = (User) oin.readObject();
+           db.deleteUser(a);
+           
+           
+       }
        
     
 //    public void createCaseToPerson()throws IOException, ClassNotFoundException{

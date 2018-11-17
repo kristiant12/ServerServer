@@ -370,6 +370,24 @@ public class Database {
            }
         }
         
+        public void deleteCaseFromCreates(Case g){
+            Statement a = null;
+            ResultSet øv = null;
+            
+            try {
+            a = db.createStatement();
+            øv = a.executeQuery("delete from creates where caseID = ('"+g.getId()+"')");
+            } catch (Exception e) {
+
+           }  
+        }
+        
+        
+        public void deleteCaseInCaseAndCreates(Case g){
+            deleteCaseFromCreates(g);
+            deleteCase(g);
+        }
+        
         
         public void editCase(Case g){
             Statement a = null;
@@ -398,9 +416,10 @@ public class Database {
             List<Case> list = new ArrayList();
             list = getSpecificPersonCase(per);
             return list;
-            
         }
-      public List<Case> getSpecificPersonCase(Customer per){
+
+        
+        public List<Case> getSpecificPersonCase(Customer per){
         Statement a = null;
         ResultSet øv = null;
         
@@ -495,41 +514,156 @@ public class Database {
             a = db.createStatement();
             øv = a.executeQuery("update cases set boolean = '1' where caseid = '"+f.getId()+"'");
  
+           }catch (Exception ex) {
             
+        }
+      }
+      // dennne metode skal laves om så den ikke taqer en case da det giver ingen mening <
+      public List<Case> getEvaluetaCase(Case f){
+           Statement a = null;
+        ResultSet øv = null;
+      
+        List<Case> list = new ArrayList();
+            String title = "";
+            String caseID = "";
+            String budget = "";
+            String deadline  = "";
+            String component = "";
+            String freeText = "";
+            String test = "";
+            boolean redgjordt = false;
+
+        
+         try{
+            a = db.createStatement();
+            øv = a.executeQuery("select * from cases where boolean = '"+1+"'");
+ 
+            
+            while(øv.next()){
+                    title = øv.getString(1);
+                    caseID = øv.getString(2);
+                    budget = øv.getString(3);
+                    deadline = øv.getString(4);
+                    component = øv.getString(5);
+                    freeText = øv.getString(6);
+                    test = øv.getString(7);
+
+                    list.add(new Case(title, caseID, budget, deadline, component, redgjordt, freeText));
+                }
+        } catch (Exception ex) {
+            
+        }
+          return list;
+          
+      }
+      
+      private void deleteAllCustomCasesFromCreates(Customer ff){
+        Statement a = null;
+        ResultSet øv = null;
+      
+             try{
+            a = db.createStatement();
+            øv = a.executeQuery("delete from creates where email = '"+ff.getEmail()+"'");
+ 
            }catch (Exception ex) {
             
         }
           
+      }
+//        private void deleteAllCustomCases(Customer ff){
+//            List<Case> list = getSpecificUserCaseList(ff);
+//            for (int i = 0; i < list.size(); i++) {
+//                deleteCase(list.get(i));
+//           }
+//            
+//            
+//      }
+
+        
+      
+      private void deleteCustumerUser(Customer f){
+        Statement a = null;
+        ResultSet øv = null;
+      
+             try{
+            a = db.createStatement();
+            øv = a.executeQuery("delete from customer where username = '"+f.getUserName()+"'");
+ 
+           }catch (Exception ex) {
+            
+        }  
+      }
+      
+      private void deleteEmployee(Employee e){
+        Statement a = null;
+        ResultSet øv = null;
+      
+             try{
+            a = db.createStatement();
+            øv = a.executeQuery("delete from employee where username = '"+e.getUserName()+"'");
+ 
+           }catch (Exception ex) {
+        }    
+      }
+      
+      
+      private void deleteManufature(Manufacturer m){
+        Statement a = null;
+        ResultSet øv = null;
+      
+             try{
+            a = db.createStatement();
+            øv = a.executeQuery("delete from manufacturer where username = '"+m.getUserName()+"'");
+ 
+           }catch (Exception ex) {
+        }  
+      }
+      private void deleteAdmin(Admin aa){
+        Statement a = null;
+        ResultSet øv = null;
+      
+             try{
+            a = db.createStatement();
+            øv = a.executeQuery("delete from admin where loginname = '"+aa.getUserName()+"'");
+ 
+           }catch (Exception ex) {
+        }    
+      }
+      
+      
+      
+ 
+      
+      
+      
+      public void deleteUser(User f){
+          
+          if(f instanceof Customer){
+              //deleteAllCustomCases((Customer) f);
+              deleteAllCustomCasesFromCreates((Customer) f);
+              deleteCustumerUser((Customer) f);
+          }else if(f instanceof Manufacturer){
+              deleteManufature((Manufacturer) f);
+          }else if(f instanceof Employee){
+              deleteEmployee((Employee) f);
+          }else if(f instanceof Admin){
+              deleteAdmin((Admin) f);
+          }
           
           
       }
       
       
-          
-        public static void main(String[] args) {
+      
+      public static void main(String[] args) {
         Database a = new Database();
+        List<User> b = a.getCustomer();
         
-        
-        Customer s = new Customer("henrik", "1234", "gretoisvej 12, 5500 middelfart", 3215422, "henrik@gmail.com", "henrik jens jensen");
-        List<Case> ss  = a.getSpecificUserCaseList(s);
-        
-        
-        for (int i = 0; i < ss.size(); i++) {
-            System.out.println(ss.get(i).toString());
-        }
-//        List<Case> test = a.getNotEvaluadedCase();
-//        
-//        for(int i = 0; i<test.size();i++){
-//            System.out.println(test.get(i).toString());
-//        }
-                
-        
-        
-    
-             
+          for (int i = 0; i < b.size(); i++) {
+              a.deleteUser(b.get(i));
+          }
+          
+          
     }
-        
-        
-        
         
 }
