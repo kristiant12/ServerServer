@@ -60,7 +60,14 @@ public class Database {
          }
          return test;
      }
-          
+       
+     
+     
+     
+     
+    // har noget at gøre med at få user
+     
+     
      public List<User> getUser(){
         List<User> list = new ArrayList(); 
         list.clear(); 
@@ -182,6 +189,16 @@ public class Database {
         return list;
     }
     
+        
+        
+        
+        
+        
+        
+        
+        // har får man cases
+        
+        
         private List<Case> findCase(){
             
             Statement a = null;
@@ -235,11 +252,23 @@ public class Database {
 
 
         
+        
+        
+        
+        // hved ikke lige hvad dennne gør
+        
+        
         public Case insertIntoDb(Case caseid){
             Case a = caseid;
             return a;
             
         }
+        
+        
+        
+        
+        
+        // her kan der oprettes burger
         
         public void createEmployee(Employee j) {
         Statement a = null;
@@ -302,6 +331,10 @@ public class Database {
            }
            
            
+           
+           
+           
+        
            
            
         public void createCase(Case g) {
