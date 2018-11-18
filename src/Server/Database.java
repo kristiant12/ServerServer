@@ -557,27 +557,27 @@ public class Database {
           
       }
       
-      private void deleteAllCustomCasesFromCreates(Customer ff){
-        Statement a = null;
-        ResultSet øv = null;
-      
-             try{
-            a = db.createStatement();
-            øv = a.executeQuery("delete from creates where email = '"+ff.getEmail()+"'");
- 
-           }catch (Exception ex) {
-            
-        }
-          
-      }
-//        private void deleteAllCustomCases(Customer ff){
-//            List<Case> list = getSpecificUserCaseList(ff);
-//            for (int i = 0; i < list.size(); i++) {
-//                deleteCase(list.get(i));
-//           }
+//      private void deleteAllCustomCasesFromCreates(Customer ff){
+//        Statement a = null;
+//        ResultSet øv = null;
+//      
+//             try{
+//            a = db.createStatement();
+//            øv = a.executeQuery("delete from creates where email = '"+ff.getEmail()+"'");
+// 
+//           }catch (Exception ex) {
 //            
-//            
+//        }
+//          
 //      }
+        private void deleteAllCustomCases(Customer ff){
+            List<Case> list = getSpecificUserCaseList(ff);
+            for (int i = 0; i < list.size(); i++) {
+                deleteCaseInCaseAndCreates(list.get(i));
+           }
+            
+            
+      }
 
         
       
@@ -639,8 +639,8 @@ public class Database {
       public void deleteUser(User f){
           
           if(f instanceof Customer){
-              //deleteAllCustomCases((Customer) f);
-              deleteAllCustomCasesFromCreates((Customer) f);
+              deleteAllCustomCases((Customer) f);
+//              deleteAllCustomCasesFromCreates((Customer) f);
               deleteCustumerUser((Customer) f);
           }else if(f instanceof Manufacturer){
               deleteManufature((Manufacturer) f);
@@ -657,10 +657,10 @@ public class Database {
       
       public static void main(String[] args) {
         Database a = new Database();
-        List<User> b = a.getCustomer();
+        List<Case> b = a.getCases();
         
           for (int i = 0; i < b.size(); i++) {
-              a.deleteUser(b.get(i));
+              a.deleteCase(b.get(i));
           }
           
           
