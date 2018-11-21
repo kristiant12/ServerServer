@@ -7,6 +7,7 @@ package Server;
 
 import Business.Case;
 import Business.Customer;
+import Business.Ticket;
 import Business.User;
 import Server.Database;
 import java.io.IOException;
@@ -110,9 +111,19 @@ public class SocketServer extends Thread {
                 else if(request.equals("15")){
                     getAllEvaluatetCases();
                     
-                }else if(request.equals("16")){
+                }
+                else if(request.equals("16")){
                     deleteUser();
                 }
+                else if(request.equals("17")){
+                    createTicket();
+                }
+                else if(request.equals("18")){
+                    sendAllCustumerTickets();
+                }
+               
+                    
+                 
                 
             
                 
@@ -261,9 +272,33 @@ public class SocketServer extends Thread {
        public void deleteUser() throws IOException, ClassNotFoundException{
            User a = (User) oin.readObject();
            db.deleteUser(a);
-           
-           
        }
+       
+       public void createTicket() throws IOException, ClassNotFoundException{
+           HashMap<Customer,Ticket> crTicket = (HashMap<Customer,Ticket>) oin.readObject();
+            Customer us = null;
+            Ticket ca = null;
+          for(Customer test : crTicket.keySet()){
+              us = test;
+              System.out.println(us.toString());
+          }
+         for (Ticket dd : crTicket.values()) {
+            ca = dd;
+            System.out.println(ca.toString());
+
+        }
+          db.CustumerCreateTicket(ca, us);    
+       }
+       
+      public void sendAllCustumerTickets() throws IOException, ClassNotFoundException{
+          Customer cu = (Customer) oin.readObject();
+          List<Ticket> ti = db.getAlleTickets(cu);
+          mapObjectOutputStream.writeObject(ti);
+      } 
+      
+       
+       
+       
        
     
 //    public void createCaseToPerson()throws IOException, ClassNotFoundException{

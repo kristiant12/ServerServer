@@ -10,6 +10,7 @@ import Business.Case;
 import Business.Customer;
 import Business.Employee;
 import Business.Manufacturer;
+import Business.Ticket;
 import Business.User;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -256,8 +257,6 @@ public class Database {
         
         
         // hved ikke lige hvad dennne gør
-        
-        
         public Case insertIntoDb(Case caseid){
             Case a = caseid;
             return a;
@@ -336,7 +335,8 @@ public class Database {
            
         
            
-           
+      
+        // her oprettes der sager
         public void createCase(Case g) {
         Statement a = null;
         ResultSet øv = null;
@@ -664,11 +664,6 @@ public class Database {
       }
       
       
-      
- 
-      
-      
-      
       public void deleteUser(User f){
           
           if(f instanceof Customer){
@@ -682,19 +677,120 @@ public class Database {
           }else if(f instanceof Admin){
               deleteAdmin((Admin) f);
           }
-          
-          
       }
+      
+      
+      private void CreateTicket(Ticket t){
+        Statement a = null;
+        ResultSet øv = null;
+      
+             try{
+            a = db.createStatement();
+            øv = a.executeQuery("insert into tickets values ('"+t.getIssuenumber()+"','"+t.getIssueDescription()+"')");
+ 
+           }catch (Exception ex) {
+        } 
+      }
+
+      private void insertIntoMakes(Ticket t, Customer c){
+        Statement a = null;
+        ResultSet øv = null;
+      
+             try{
+            a = db.createStatement();
+            øv = a.executeQuery("insert into makes values ('"+t.getIssuenumber()+"','"+c.getEmail()+"')");
+ 
+           }catch (Exception ex) {
+        }  
+      }
+      
+
+      public void CustumerCreateTicket(Ticket t,Customer c){
+          if(checkIfEmailExist(c) == true){
+            CreateTicket(t);
+            insertIntoMakes(t, c);  
+          }
+      }
+      
+      public void insertIntoReply(Ticket t, Employee e){
+        Statement a = null;
+        ResultSet øv = null;
+      
+             try{
+            a = db.createStatement();
+            øv = a.executeQuery("insert into reply values ('"+t.getIssuenumber()+"','"+e.getUserName()+"')");
+ 
+           }catch (Exception ex) {
+        }  
+      }
+      
+//     public void updateTicket(){
+//        Statement a = null;
+//        ResultSet øv = null;
+//      
+//             try{
+//            a = db.createStatement();
+//            øv = a.executeQuery("insert into reply values ('"+t.getIssuenumber()+"','"+e.getUserName()+"')");
+// 
+//           }catch (Exception ex) {
+//        }  
+//     }
+//      
+      public List<Ticket> getAlleTickets(Customer c){
+          Statement a = null;
+          ResultSet øv = null;
+          List<Ticket> list = new ArrayList();
+          String idNumber = null;
+          String desiption = null;
+          
+             try{
+            a = db.createStatement();
+            øv = a.executeQuery("select * from tickets,makes where makes.ticketid = tickets.ticketid AND makes.email = '"+c.getEmail()+ "'");
+            while(øv.next()){
+                idNumber = øv.getString(1);
+                desiption = øv.getString(2);
+                list.add(new Ticket(idNumber, desiption));
+            }
+           }catch (Exception ex) {
+        }  
+             return list;
+             
+      }
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+       
+      
+      
       
       
       
       public static void main(String[] args) {
         Database a = new Database();
-        List<Case> b = a.getCases();
+       
+        Ticket t = new Ticket("ABC123","der er nogle fejl");
         
-          for (int i = 0; i < b.size(); i++) {
-              a.deleteCase(b.get(i));
-          }
+        a.CreateTicket(t);
           
           
     }

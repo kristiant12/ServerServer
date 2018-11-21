@@ -5,19 +5,24 @@
  */
 package Business;
 
+import java.io.Serializable;
+
 
 
 /**
  *
  * @author rober
  */
-public class Ticket{
+public class Ticket implements Serializable{
     
     private String issueNumber;
     private String issueDescription;
+       static final long serialVersionUID = -7588980448693010399L;
+
+
 
     
-    public Ticket(String issueDescript,String issueNumber){
+    public Ticket(String issueNumber,String issueDescript){
         this.issueDescription = issueDescript;
         this.issueNumber = issueNumber;
     }
@@ -40,9 +45,8 @@ public class Ticket{
 
     }
     public String toString(){
-          return issueNumber + issueDescription;
+          return issueNumber +" "+ issueDescription;
 
     }
     
 }
-
