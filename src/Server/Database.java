@@ -762,6 +762,23 @@ public class Database {
       
       
       
+      // manufacture dellen 
+      
+         public void editManufatur(Manufacturer m){
+            Statement a = null;
+            ResultSet øv = null;
+            
+             try {
+            a = db.createStatement();
+            øv = a.executeQuery("update manufacturer set firmname = '"+m.getFirmaName()+"', password = '"+m.getPassword()+"', firmaddress = '"+m.getFirmaddress()
+                    +"', number = '"+m.getNumber()+"', firmemail = '"+m.getFirmaMail()+"' where username = '"+m.getUserName()+"'" );
+            } catch (Exception e) {
+
+           }
+      
+         }
+      
+      
       
       
       

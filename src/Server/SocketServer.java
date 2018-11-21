@@ -7,6 +7,7 @@ package Server;
 
 import Business.Case;
 import Business.Customer;
+import Business.Manufacturer;
 import Business.Ticket;
 import Business.User;
 import Server.Database;
@@ -121,7 +122,9 @@ public class SocketServer extends Thread {
                 else if(request.equals("18")){
                     sendAllCustumerTickets();
                 }
-               
+                else if(request.equals("19")){
+                    updateManufactor();
+                }
                     
                  
                 
@@ -297,6 +300,10 @@ public class SocketServer extends Thread {
       } 
       
        
+      public void updateManufactor() throws IOException, ClassNotFoundException{
+          Manufacturer m = (Manufacturer) oin.readObject();
+          db.editManufatur(m);
+      }
        
        
        
