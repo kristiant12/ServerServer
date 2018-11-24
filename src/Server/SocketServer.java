@@ -11,6 +11,8 @@ import Business.Manufacturer;
 import Business.Ticket;
 import Business.User;
 import Server.Database;
+import java.awt.Image;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -106,9 +108,16 @@ public class SocketServer extends Thread {
                    getAllNotEvaluatetCases();
                 }
                 
+                
+                
                 else if(request.equals("13")){
                     EvaluateCase();
                 }
+                else if(request.equals("14")){
+                    getAllTicketsforEmployee();
+                }
+                
+                
                 else if(request.equals("15")){
                     getAllEvaluatetCases();
                     
@@ -267,8 +276,7 @@ public class SocketServer extends Thread {
        }
        
        public void getAllEvaluatetCases() throws IOException, ClassNotFoundException{
-           Case a = (Case) oin.readObject();
-           List<Case> eval = db.getEvaluetaCase(a);
+           List<Case> eval = db.getEvaluetaCase();
            mapObjectOutputStream.writeObject(eval);
        } 
        
@@ -305,7 +313,14 @@ public class SocketServer extends Thread {
           db.editManufatur(m);
       }
        
-       
+      public void getAllTicketsforEmployee() throws IOException{
+          
+          List<Ticket> a = db.getAllTicketsEmployee();
+          mapObjectOutputStream.writeObject(a);
+          
+          
+      }
+   
        
     
 //    public void createCaseToPerson()throws IOException, ClassNotFoundException{

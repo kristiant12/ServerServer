@@ -546,13 +546,28 @@ public class Database {
            try{
             a = db.createStatement();
             øv = a.executeQuery("update cases set boolean = '1' where caseid = '"+f.getId()+"'");
+               addTooAuction(f);
+            
+           }catch (Exception ex) {
+            
+        }
+      }
+      
+      private void addTooAuction(Case f){
+          Statement a = null;
+           ResultSet øv = null;
+          
+           try{
+            a = db.createStatement();
+            øv = a.executeQuery("insert into approvedcase values('"+f.getCaseTitle()+"','"+f.getId()+"','"+f.getCaseBudget()+"','"+f.getDeadline()+"','"+f.getComponent()+"','"+f.getFreeText()+"')");
  
            }catch (Exception ex) {
             
         }
       }
+      
       // dennne metode skal laves om så den ikke taqer en case da det giver ingen mening <
-      public List<Case> getEvaluetaCase(Case f){
+      public List<Case> getEvaluetaCase(){
            Statement a = null;
         ResultSet øv = null;
       
@@ -563,8 +578,8 @@ public class Database {
             String deadline  = "";
             String component = "";
             String freeText = "";
-            String test = "";
-            boolean redgjordt = false;
+            
+            boolean redgjordt = true;
 
         
          try{
@@ -579,7 +594,7 @@ public class Database {
                     deadline = øv.getString(4);
                     component = øv.getString(5);
                     freeText = øv.getString(6);
-                    test = øv.getString(7);
+                  
 
                     list.add(new Case(title, caseID, budget, deadline, component, redgjordt, freeText));
                 }
@@ -607,11 +622,10 @@ public class Database {
             List<Case> list = getSpecificUserCaseList(ff);
             for (int i = 0; i < list.size(); i++) {
                 deleteCaseInCaseAndCreates(list.get(i));
-           }
-            
-            
+           }     
       }
 
+        
         
       
       private void deleteCustumerUser(Customer f){
@@ -781,6 +795,27 @@ public class Database {
       
       
       
+         
+         public List<Ticket> getAllTicketsEmployee(){
+          Statement a = null;
+          ResultSet øv = null;
+          List<Ticket> list = new ArrayList();
+          String idNumber = null;
+          String desiption = null;
+          
+             try{
+            a = db.createStatement();
+            øv = a.executeQuery("select * from tickets");
+            while(øv.next()){
+                idNumber = øv.getString(1);
+                desiption = øv.getString(2);
+                list.add(new Ticket(idNumber, desiption));
+            }
+           }catch (Exception ex) {
+        }  
+             return list;  
+             
+         }
       
       
       
