@@ -18,6 +18,9 @@ public class Ticket implements Serializable{
     private String issueNumber;
     private String issueDescription;
        static final long serialVersionUID = -7588980448693010399L;
+           
+    private String backMessage;
+    private String employeeName;
 
 
 
@@ -47,6 +50,22 @@ public class Ticket implements Serializable{
     public String toString(){
           return issueNumber +" "+ issueDescription;
 
+    }
+    
+    public String getBackMessage() {
+        return backMessage;
+    }
+
+    public void setBackMessage(String backMessage) {
+        this.backMessage = backMessage;
+    }
+
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
     }
     
 }
