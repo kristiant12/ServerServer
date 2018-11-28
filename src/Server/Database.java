@@ -820,7 +820,17 @@ public class Database {
       
       
       
-      
+      public void employeeReplyTicket(Ticket t){
+            Statement a = null;
+            ResultSet øv = null;
+            
+             try {
+            a = db.createStatement();
+            øv = a.executeQuery("update tickets set description ='"+t.getIssueDescription()+"\n----------------------"+t.getBackMessage()+"\n reply by "+t.getEmployeeName()+"' where ticketid = '"+t.getIssuenumber()+"'" );
+            } catch (Exception e) {
+
+           }
+      }
       
       
       
@@ -841,8 +851,10 @@ public class Database {
         Database a = new Database();
        
         Ticket t = new Ticket("ABC123","der er nogle fejl");
+        t.setBackMessage("test");
+        t.setEmployeeName("lort");
         
-        a.CreateTicket(t);
+        a.employeeReplyTicket(t);
           
           
     }

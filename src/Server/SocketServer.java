@@ -134,6 +134,9 @@ public class SocketServer extends Thread {
                 else if(request.equals("19")){
                     updateManufactor();
                 }
+                else if(request.equals("20")){
+                    employeeReplyTicket();
+                }
                     
                  
                 
@@ -319,6 +322,12 @@ public class SocketServer extends Thread {
           mapObjectOutputStream.writeObject(a);
           
           
+      }
+      
+      
+      public void employeeReplyTicket() throws IOException, ClassNotFoundException{
+          Ticket t = (Ticket) oin.readObject();
+          db.employeeReplyTicket(t);
       }
    
        
