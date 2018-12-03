@@ -48,7 +48,7 @@ public class Ticket implements Serializable{
 
     }
     public String toString(){
-          return issueNumber +" "+ issueDescription;
+         return issueNumber;
 
     }
     

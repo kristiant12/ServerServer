@@ -40,8 +40,8 @@ public class Case implements Serializable{
         this.evaluated = evaluated;
         this.freeText = freeText;
     }
-      
-
+   
+ 
     public double getBid() {
         return bid;
     }
@@ -121,7 +121,7 @@ public class Case implements Serializable{
 
     @Override
     public String toString() {
-        return "Case{" + "caseTitle=" + caseTitle + ", caseID=" + caseID + ", caseBudget=" + caseBudget + ", deadline=" + deadline + ", component=" + component + ", evaluated=" + evaluated + ", freeText=" + freeText + ", bid=" + bid + '}';
+           return  "caseTitle=" + caseTitle;
     }
     
     

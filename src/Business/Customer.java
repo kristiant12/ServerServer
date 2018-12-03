@@ -70,7 +70,7 @@ public class Customer extends User implements Serializable{
 
     @Override
     public String toString() {
-        return "Customer{" +super.toString()+ "address=" + address + ", number=" + number + ", email=" + email + ", fulName=" + fulName + '}';
+        return "Customer=" +super.toString();
     }
     
     

@@ -63,7 +63,7 @@ public class Manufacturer extends User implements Serializable{
 
     @Override
     public String toString() {
-        return "Manufacturer{" +super.toString()+ "firmaddress=" + firmaddress + ", number=" + number + ", firmaName=" + firmaName + ", firmaMail=" + firmaMail +  '}';
+        return "Manufacturer{" +super.toString()+ '}';
     }
     
     

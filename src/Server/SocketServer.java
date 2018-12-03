@@ -81,6 +81,7 @@ public class SocketServer extends Thread {
                 
 
                 if(request.equals("1")){
+                    
                     sendListOfUseres();
                 }else if(request.equals("2")){
                     sendListOfCases();
@@ -136,6 +137,13 @@ public class SocketServer extends Thread {
                 }
                 else if(request.equals("20")){
                     employeeReplyTicket();
+                }
+                else if(request.equals("21")){
+                   updateBid();
+                }
+                
+                else if(request.equals("22")){
+                    getAllStufInauction();
                 }
                     
                  
@@ -275,7 +283,7 @@ public class SocketServer extends Thread {
        
        public void EvaluateCase() throws IOException, ClassNotFoundException{
            Case a = (Case) oin.readObject();
-           db.EvaluateCase(a);
+           db.evaluateCaseAndAddToAuction(a);
        }
        
        public void getAllEvaluatetCases() throws IOException, ClassNotFoundException{
@@ -331,6 +339,16 @@ public class SocketServer extends Thread {
       }
    
        
+      public void getAllStufInauction() throws IOException{
+          mapObjectOutputStream.writeObject(db.getAllCasesInAction());
+          
+      }
+      
+      
+      public void updateBid() throws IOException, ClassNotFoundException{
+          Case s = (Case)oin.readObject();
+          db.updateBid(s);
+      }
     
 //    public void createCaseToPerson()throws IOException, ClassNotFoundException{
 //        User a = (User) oin.readObject();

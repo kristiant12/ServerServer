@@ -415,10 +415,25 @@ public class Database {
            }  
         }
         
+        public void deleteCasefromAction(Case g){
+            
+              Statement a = null;
+            ResultSet øv = null;
+            
+            try {
+            a = db.createStatement();
+            øv = a.executeQuery("delete from auction where caseID = ('"+g.getId()+"')");
+            } catch (Exception e) {
+
+           } 
+            
+        }
+        
         
         public void deleteCaseInCaseAndCreates(Case g){
             deleteCaseFromCreates(g);
             deleteCase(g);
+            deleteCasefromAction(g);
         }
         
         
@@ -546,26 +561,47 @@ public class Database {
            try{
             a = db.createStatement();
             øv = a.executeQuery("update cases set boolean = '1' where caseid = '"+f.getId()+"'");
-               addTooAuction(f);
+//               addTooAuction(f);
             
            }catch (Exception ex) {
             
         }
       }
+      public void evaluateCaseAndAddToAuction(Case f){
+          EvaluateCase(f);
+          addToAction(f);
+      }
       
-      private void addTooAuction(Case f){
-          Statement a = null;
+      
+      
+      
+      
+      public void addToAction(Case f){
+           Statement a = null;
            ResultSet øv = null;
           
            try{
             a = db.createStatement();
-            øv = a.executeQuery("insert into approvedcase values('"+f.getCaseTitle()+"','"+f.getId()+"','"+f.getCaseBudget()+"','"+f.getDeadline()+"','"+f.getComponent()+"','"+f.getFreeText()+"')");
+            øv = a.executeQuery("insert into auction values ('"+f.getCaseTitle()+"','"+f.getId()+"','"+f.getCaseBudget()+"','"+f.getDeadline()+"','"+f.getComponent()+"','"+f.getFreeText()+"')");
  
            }catch (Exception ex) {
             
         }
       }
-      
+//      
+//      private void addTooAuction(Case f){
+//          Statement a = null;
+//           ResultSet øv = null;
+//          
+//           try{
+//            a = db.createStatement();
+//            øv = a.executeQuery("insert into approvedcase values('"+f.getCaseTitle()+"','"+f.getId()+"','"+f.getCaseBudget()+"','"+f.getDeadline()+"','"+f.getComponent()+"','"+f.getFreeText()+"')");
+// 
+//           }catch (Exception ex) {
+//            
+//        }
+//      }
+//      
       // dennne metode skal laves om så den ikke taqer en case da det giver ingen mening <
       public List<Case> getEvaluetaCase(){
            Statement a = null;
@@ -833,11 +869,71 @@ public class Database {
       }
       
       
+      public List<Case> getAllCasesInAction(){
+            Statement a = null;
+            ResultSet øv = null;
+            List<Case> caseList = new ArrayList();
+            
+            String title = "";
+            String caseID = "";
+            String budget = "";
+            String deadline  = "";
+            String component = "";
+            String freeText = "";
+            
+            
+            try {
+            a = db.createStatement();
+            øv = a.executeQuery("select * from auction" );
+            
+                
+            while(øv.next()){
+                    title = øv.getString(1);
+                    caseID = øv.getString(2);
+                    budget = øv.getString(3);
+                    deadline = øv.getString(4);
+                    component = øv.getString(5);
+                    freeText = øv.getString(6);
+                Case f = new Case(title, caseID, budget, deadline, component, true, freeText);
+                caseList.add(f);
+            }
+            
+            } catch (Exception e) {
+
+           }
+            return caseList;
+      }
+      
+      private void updateBidInCases(Case f){
+          Statement a = null;
+            ResultSet øv = null;
+            
+             try {
+            a = db.createStatement();
+            øv = a.executeQuery("update cases set bid = "+f.getBid()+" where caseid = '"+f.getId()+"'");
+            } catch (Exception e) {
+
+           }
+      }
       
       
       
+      private void updateBidInaucktion(Case f){
+          Statement a = null;
+            ResultSet øv = null;
+            
+             try {
+            a = db.createStatement();
+            øv = a.executeQuery("update auction set bid = "+f.getBid()+" where caseid = '"+f.getId()+"'");
+            } catch (Exception e) {
+
+           }
+      }
       
-      
+      public void updateBid(Case f){
+          updateBidInCases(f);
+          updateBidInaucktion(f);
+      }
       
       
       
@@ -850,12 +946,11 @@ public class Database {
       public static void main(String[] args) {
         Database a = new Database();
        
-        Ticket t = new Ticket("ABC123","der er nogle fejl");
-        t.setBackMessage("test");
-        t.setEmployeeName("lort");
+        Case test = new Case ("ding","Case ID 1232","sdsds","fuck jul","  dd",true,"test");
+        test.setBid(1000);
         
-        a.employeeReplyTicket(t);
-          
+        a.updateBid(test);
+        
           
     }
         
