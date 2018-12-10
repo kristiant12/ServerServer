@@ -7,6 +7,8 @@ package Server;
 
 import Business.Case;
 import Business.Customer;
+import Business.EnccryptionDecryption;
+import Business.HomeMadeMap;
 import Business.Manufacturer;
 import Business.Ticket;
 import Business.User;
@@ -28,6 +30,9 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.SealedObject;
 
 public class SocketServer extends Thread {
 
@@ -41,6 +46,7 @@ public class SocketServer extends Thread {
     private List<Case> listCase;
     private List<Case> listToSpecifikUserOfCases;
     private Map<User,Case> mapOfUserAndCase;
+    private EnccryptionDecryption encryp;
     private SocketServer(Socket socket, Database db) {
         this.db = db;
         this.socket = socket;
@@ -51,6 +57,7 @@ public class SocketServer extends Thread {
     public void run() {
   //      map = new HashMap();
         OutputStream out = null;
+        encryp = new EnccryptionDecryption();
         InputStream in = null;
         mapObjectOutputStream = null;
         oin = null;
@@ -63,25 +70,17 @@ public class SocketServer extends Thread {
             mapObjectOutputStream = new ObjectOutputStream(out);
             oin = new ObjectInputStream(socket.getInputStream());
 
-            //disse modter fra clieentet
             in = socket.getInputStream();
             Scanner inp = new Scanner(in);
-           // PrintStream outp = new PrintStream(out);
 
-            // BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String request;
             
-            //sendListOfUseres();
-//            sendListOfCases();
-//            sendListOfUseres();
+  
             
-            
-            //String test = null;
             while ((request = inp.nextLine()) != null) {
                 
 
                 if(request.equals("1")){
-                    
                     sendListOfUseres();
                 }else if(request.equals("2")){
                     sendListOfCases();
@@ -144,6 +143,9 @@ public class SocketServer extends Thread {
                 
                 else if(request.equals("22")){
                     getAllStufInauction();
+                    
+                }else if(request.equals("30")){
+                    sendkey();
                 }
                     
                  
@@ -156,30 +158,14 @@ public class SocketServer extends Thread {
                 System.out.println("Message received:" + request);
                 
             }
-//                if(request.equals("1")){
-//               sendListOfUseres();
-//                }else if(request.equals("2")){
-//                    sendListOfCases();
-//                }
-//            }
-//             while ((request = inp.nextLine()) != null) {
-//                System.out.println("Message received:" + request);
-//                test.add(request);
-//                //test.add(request+" 3");
-//                
-//              outp.println(test);
-//
-//            }
-//         // detter virke så  
-//            map.putAll(db.getUser());
-//            mapObjectOutputStream.writeObject(map);
-                
-//            test = db.test();
-//            mapObjectOutputStream.writeObject(test);
             
         } catch (IOException ex) {
             System.out.println("Unable to get streams from client");
         } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalBlockSizeException ex) {
+            Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (BadPaddingException ex) {
             Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
@@ -193,10 +179,16 @@ public class SocketServer extends Thread {
         }
     }
     
-    public void sendListOfUseres () throws IOException{
-      List<User> test = new ArrayList();
+    
+    public void sendkey() throws IOException{
+        mapObjectOutputStream.writeObject(encryp.getKey());
+    }
+    
+    public void sendListOfUseres () throws IOException, IllegalBlockSizeException{
+        List<User> test = new ArrayList();
         test.addAll(db.getUser());
-        mapObjectOutputStream.writeObject(test);
+        List<SealedObject> test2 = encryp.encryptUserList(test);
+        mapObjectOutputStream.writeObject(test2);
         mapObjectOutputStream.flush();
         //listUser.clear();
 
@@ -204,23 +196,36 @@ public class SocketServer extends Thread {
 //            mapObjectOutputStream.writeObject(map);
     }
     
-    public void sendListOfCases() throws IOException{
+    public void sendListOfCases() throws IOException, IllegalBlockSizeException{
         List<Case> test = new ArrayList();
         test.addAll(db.getCases());
-        mapObjectOutputStream.writeObject(listCase);
+        List<SealedObject> test2 = encryp.encryptCaseList(test);
+        mapObjectOutputStream.writeObject(test2);
         mapObjectOutputStream.flush();
         listCase.clear();
+
+        
+//        mapObjectOutputStream.writeObject(listCase);
+//        mapObjectOutputStream.flush();
+//        listCase.clear();
 
 
     }
     
-    public void sendCaseFromAUser() throws IOException, ClassNotFoundException{
-        Customer a = (Customer) oin.readObject();
+    public void sendCaseFromAUser() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
+        SealedObject a = (SealedObject) oin.readObject();
+        Customer b = encryp.deccryptCustumer(a);
         List<Case> test = new ArrayList();
-        
-        test.addAll(db.getSpecificUserCaseList(a));
-        mapObjectOutputStream.writeObject(test);
+        test.addAll(db.getSpecificUserCaseList(b));
+        List<SealedObject> test2 = encryp.encryptCaseList(test);
+        mapObjectOutputStream.writeObject(test2);
         mapObjectOutputStream.flush();
+//        Customer a = (Customer) oin.readObject();
+//        List<Case> test = new ArrayList();
+//        
+//        test.addAll(db.getSpecificUserCaseList(a));
+//        mapObjectOutputStream.writeObject(test);
+//        mapObjectOutputStream.flush();
         
 //        listToSpecifikUserOfCases.addAll(db.getSpecificUserCaseList((Customer) a));
 //        mapObjectOutputStream.writeObject(listToSpecifikUserOfCases);
@@ -229,28 +234,44 @@ public class SocketServer extends Thread {
     
     
     
-    public void getUser() throws IOException, ClassNotFoundException{
-        User a = (User) oin.readObject();
-        db.createUser(a);
-        System.out.println(a.toString());
+    public void getUser() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
+        
+        SealedObject a = (SealedObject) oin.readObject();
+        
+        User b = encryp.decryptUser(a);
+        db.createUser(b);
+        System.out.println(b.toString());
+        
+//        User a = (User) oin.readObject();
+//        db.createUser(a);
+//        System.out.println(a.toString());
         
         }
     
-    
+   // skal mulig vis slettes da den ikke rigtig gøre noget 
     public void getCase() throws IOException, ClassNotFoundException{
-        Case a = (Case) oin.readObject();
+        SealedObject a = (SealedObject) oin.readObject();
         
-        System.out.println(a.toString());
+        
+//        Case a = (Case) oin.readObject();
+//        
+//        System.out.println(a.toString());
         
     }
-       public void DeleteCase() throws IOException, ClassNotFoundException{
-        Case a = (Case) oin.readObject();
-        db.deleteCaseInCaseAndCreates(a);
+       public void DeleteCase() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
+            SealedObject a = (SealedObject) oin.readObject();
+            Case b = encryp.decryptCase(a);
+            db.deleteCaseInCaseAndCreates(b);
+//        Case a = (Case) oin.readObject();
+//        db.deleteCaseInCaseAndCreates(a);
        // System.out.println(a.toString());
     }
 
-       public void getMapOfUserAndCase() throws IOException, ClassNotFoundException{
-          HashMap<User,Case> a = (HashMap<User,Case>) oin.readObject();
+       public void getMapOfUserAndCase() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
+          SealedObject ting = (SealedObject) oin.readObject();
+          HomeMadeMap m = encryp.decryptHomeMadeMap(ting);
+          HashMap<User,Case> a = new HashMap();
+          a.put(m.getUser(), m.getCase());
           User us = null;
           Case ca = null;
           for(User test : a.keySet()){
@@ -264,40 +285,59 @@ public class SocketServer extends Thread {
         }
           db.doStuff((Customer) us, ca);
        }
+//        HashMap<User,Case> a = (HashMap<User,Case>) oin.readObject();
+//          User us = null;
+//          Case ca = null;
+//          for(User test : a.keySet()){
+//              us = test;
+//              System.out.println(us.toString());
+//          }
+//        for (Case dd : a.values()) {
+//            ca = dd;
+//            System.out.println(ca.toString());
+//
+//        }
+//          db.doStuff((Customer) us, ca);
+//       }
        
-       public void edidtCase() throws IOException, ClassNotFoundException{
-           Case a = (Case) oin.readObject();
+       public void edidtCase() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
+          SealedObject d = (SealedObject) oin.readObject();
+          Case a = encryp.decryptCase(d);
+            // Case a = (Case) oin.readObject();
            db.editCase(a);
-           
-           
-           
        }
        
-       public void getAllNotEvaluatetCases() throws IOException{
+       
+       public void getAllNotEvaluatetCases() throws IOException, IllegalBlockSizeException{
            List<Case> notEval = db.getNotEvaluadedCase();
-           mapObjectOutputStream.writeObject(notEval);
-           
-           
-           
+           List<SealedObject> ting = encryp.encryptCaseList(notEval);
+           mapObjectOutputStream.writeObject(ting);
        }  
        
-       public void EvaluateCase() throws IOException, ClassNotFoundException{
-           Case a = (Case) oin.readObject();
+       public void EvaluateCase() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
+           SealedObject ting = (SealedObject) oin.readObject();
+           Case a = encryp.decryptCase(ting);
+        // Case a = (Case) oin.readObject();
            db.evaluateCaseAndAddToAuction(a);
        }
        
-       public void getAllEvaluatetCases() throws IOException, ClassNotFoundException{
+       public void getAllEvaluatetCases() throws IOException, ClassNotFoundException, IllegalBlockSizeException{
            List<Case> eval = db.getEvaluetaCase();
-           mapObjectOutputStream.writeObject(eval);
+           List<SealedObject> ting = encryp.encryptCaseList(eval);
+           mapObjectOutputStream.writeObject(ting);
        } 
        
-       public void deleteUser() throws IOException, ClassNotFoundException{
-           User a = (User) oin.readObject();
+       public void deleteUser() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
+           SealedObject ting = (SealedObject) oin.readObject();
+           User a = encryp.decryptUser(ting);
            db.deleteUser(a);
        }
        
-       public void createTicket() throws IOException, ClassNotFoundException{
-           HashMap<Customer,Ticket> crTicket = (HashMap<Customer,Ticket>) oin.readObject();
+       public void createTicket() throws IOException, ClassNotFoundException, BadPaddingException, IllegalBlockSizeException{
+            SealedObject ting = (SealedObject) oin.readObject();
+            HomeMadeMap noget = encryp.decryptHomeMadeMap(ting);
+            HashMap<Customer,Ticket> crTicket = new HashMap();
+            crTicket.put(noget.getCustomer(), noget.getTicket());
             Customer us = null;
             Ticket ca = null;
           for(Customer test : crTicket.keySet()){
@@ -309,38 +349,59 @@ public class SocketServer extends Thread {
             System.out.println(ca.toString());
 
         }
-          db.CustumerCreateTicket(ca, us);    
+             db.CustumerCreateTicket(ca, us); 
+//            HashMap<Customer,Ticket> crTicket = (HashMap<Customer,Ticket>) oin.readObject();
+//            Customer us = null;
+//            Ticket ca = null;
+//          for(Customer test : crTicket.keySet()){
+//              us = test;
+//              System.out.println(us.toString());
+//          }
+//         for (Ticket dd : crTicket.values()) {
+//            ca = dd;
+//            System.out.println(ca.toString());
+//
+//        }
+//          db.CustumerCreateTicket(ca, us);  
        }
        
-      public void sendAllCustumerTickets() throws IOException, ClassNotFoundException{
-          Customer cu = (Customer) oin.readObject();
-          List<Ticket> ti = db.getAlleTickets(cu);
-          mapObjectOutputStream.writeObject(ti);
+      public void sendAllCustumerTickets() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
+          SealedObject ting = (SealedObject) oin.readObject();
+          Customer cu = encryp.deccryptCustumer(ting);
+//          Customer cu = (Customer) oin.readObject();
+           List<Ticket> ti = db.getAlleTickets(cu);
+           List<SealedObject> to = encryp.encryptTicketList(ti);
+          mapObjectOutputStream.writeObject(to);
       } 
       
        
-      public void updateManufactor() throws IOException, ClassNotFoundException{
-          Manufacturer m = (Manufacturer) oin.readObject();
+      public void updateManufactor() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
+          SealedObject ting = (SealedObject) oin.readObject();
+          Manufacturer m = encryp.decryptManufacturer(ting);
           db.editManufatur(m);
       }
        
-      public void getAllTicketsforEmployee() throws IOException{
+      public void getAllTicketsforEmployee() throws IOException, IllegalBlockSizeException{
           
           List<Ticket> a = db.getAllTicketsEmployee();
-          mapObjectOutputStream.writeObject(a);
+          List<SealedObject> ting = encryp.encryptTicketList(a);
+          mapObjectOutputStream.writeObject(ting);
           
           
       }
       
       
-      public void employeeReplyTicket() throws IOException, ClassNotFoundException{
-          Ticket t = (Ticket) oin.readObject();
+      public void employeeReplyTicket() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
+          SealedObject ting = (SealedObject) oin.readObject();
+//          Ticket t = (Ticket) oin.readObject();
+           Ticket t  = encryp.decryptTicket(ting);
           db.employeeReplyTicket(t);
       }
    
        
-      public void getAllStufInauction() throws IOException{
-          mapObjectOutputStream.writeObject(db.getAllCasesInAction());
+      public void getAllStufInauction() throws IOException, IllegalBlockSizeException{
+          List<SealedObject>ting = encryp.encryptCaseList(db.getAllCasesInAction());
+          mapObjectOutputStream.writeObject(ting);
           
       }
       

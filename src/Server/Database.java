@@ -862,7 +862,7 @@ public class Database {
             
              try {
             a = db.createStatement();
-            øv = a.executeQuery("update tickets set description ='"+t.getIssueDescription()+"\n----------------------"+t.getBackMessage()+"\n reply by "+t.getEmployeeName()+"' where ticketid = '"+t.getIssuenumber()+"'" );
+            øv = a.executeQuery("update tickets set description ='"+t.getIssueDescription()+"\n----------------------\n"+t.getBackMessage()+"\n reply by "+t.getEmployeeName()+"' where ticketid = '"+t.getIssuenumber()+"'" );
             } catch (Exception e) {
 
            }

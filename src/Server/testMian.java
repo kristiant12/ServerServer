@@ -5,51 +5,45 @@
  */
 package Server;
 
-import Business.User;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Scanner;
+import Business.Case;
+import Business.EnccryptionDecryption;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.SealedObject;
+
+
 
 /**
  *
  * @author nicol
  */
 public class testMian {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, IllegalBlockSizeException, ClassNotFoundException, BadPaddingException {
  
-        Random rand = new Random();
-        int i = rand.nextInt(1000000);
-        
-        System.out.println(i);
-        int value = 0;
+        EnccryptionDecryption a = new EnccryptionDecryption();
         
         
-        while(true){
+             List<Case> adds = new ArrayList();
         
-        if(value == 1){
-            
-        }
-        }
-        
-        
-//        HashMap<String,Integer> a = new HashMap();
-//        
-//        
-//        a.put("testss", 23);
-//        String us = "";
-//          for(String test : a.keySet()){
-//              us = test;
-//          }
-//        
-//        System.out.println(us);
-//        
-//      
-//        int w = 0;
-//        for (int dd : a.values()) {
-//            w = dd;
-//        }
-//        
-//        System.out.println(w);
+       Case d = new Case("dd", "sss", "sdsds", "sasa", "ass", true, "sdds");
+      Case e = new Case("dsssssd", "dddsss", "sdsds", "sasa", "ass", true, "sdds");
+        Case f = new Case("dd", "ddsss", "ssssdsds", "sasa", "ass", true, "sdds");
+       Case g = new Case("dd", "ssggss", "sdsds", "sassggsa", "asgsgss", true, "sddsgsgs");
+       adds.add(d);
+       adds.add(e);
+       adds.add(f);
+       adds.add(g);
+       
+       List<SealedObject> ss = new ArrayList();
+               ss.addAll(a.encryptCaseList(adds));
+       System.out.println(ss.toString());
+       List<Case> ssd = a.decryptCaseList(ss);
+        System.out.println(ssd.toString());
+       
+    
     }
     
 }
