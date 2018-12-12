@@ -23,24 +23,24 @@ public class EnccryptionDecryption {
     private static SecretKey key;
 
     public static void main(String[] args) throws IllegalBlockSizeException, IOException, ClassNotFoundException, BadPaddingException {
-        EnccryptionDecryption a = new EnccryptionDecryption();
-        
-        List<Case> adds = new ArrayList();
-        
-       Case d = new Case("dd", "sss", "sdsds", "sasa", "ass", true, "sdds");
-      Case e = new Case("dsssssd", "dddsss", "sdsds", "sasa", "ass", true, "sdds");
-        Case f = new Case("dd", "ddsss", "ssssdsds", "sasa", "ass", true, "sdds");
-       Case g = new Case("dd", "ssggss", "sdsds", "sassggsa", "asgsgss", true, "sddsgsgs");
-       adds.add(d);
-       adds.add(e);
-       adds.add(f);
-       adds.add(g);
-       
-       List<SealedObject> ss= a.encryptCaseList(adds);
-       System.out.println(ss.toString());
-       List<Case> ssd = a.decryptCaseList(ss);
-        System.out.println(ssd.toString());
-       
+//        EnccryptionDecryption a = new EnccryptionDecryption();
+//        
+//        List<Case> adds = new ArrayList();
+//        
+//       Case d = new Case("dd", "sss", "sdsds", "sasa", "ass", true, "sdds");
+//      Case e = new Case("dsssssd", "dddsss", "sdsds", "sasa", "ass", true, "sdds");
+//        Case f = new Case("dd", "ddsss", "ssssdsds", "sasa", "ass", true, "sdds");
+//       Case g = new Case("dd", "ssggss", "sdsds", "sassggsa", "asgsgss", true, "sddsgsgs");
+//       adds.add(d);
+//       adds.add(e);
+//       adds.add(f);
+//       adds.add(g);
+//       
+//       List<SealedObject> ss= a.encryptCaseList(adds);
+//       System.out.println(ss.toString());
+//       List<Case> ssd = a.decryptCaseList(ss);
+//        System.out.println(ssd.toString());
+//       
         
 
         
@@ -106,9 +106,7 @@ public class EnccryptionDecryption {
            test.add(o);
       }
       
-      return test;
-      
-      
+      return test;  
   } 
 
  public User decryptUser(SealedObject a) throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{

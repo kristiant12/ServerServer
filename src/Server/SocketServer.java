@@ -12,15 +12,11 @@ import Business.HomeMadeMap;
 import Business.Manufacturer;
 import Business.Ticket;
 import Business.User;
-import Server.Database;
-import java.awt.Image;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -39,12 +35,8 @@ public class SocketServer extends Thread {
     public static final int PORT_NUMBER = 8081;
     private Database db;
     protected Socket socket;
-//    private Map<String, String> map;
-      private ObjectInputStream oin;
+    private ObjectInputStream oin;
     private ObjectOutputStream mapObjectOutputStream;
-    private List<User> listUser;
-    private List<Case> listCase;
-    private List<Case> listToSpecifikUserOfCases;
     private Map<User,Case> mapOfUserAndCase;
     private EnccryptionDecryption encryp;
     private SocketServer(Socket socket, Database db) {
@@ -55,27 +47,19 @@ public class SocketServer extends Thread {
     }
     
     public void run() {
-  //      map = new HashMap();
         OutputStream out = null;
         encryp = new EnccryptionDecryption();
         InputStream in = null;
         mapObjectOutputStream = null;
         oin = null;
-        listCase = new ArrayList();
-        listUser = new ArrayList<>();
-         listToSpecifikUserOfCases = new ArrayList<>();
         try {
             //denne sender til clieneten
             out = socket.getOutputStream();
             mapObjectOutputStream = new ObjectOutputStream(out);
             oin = new ObjectInputStream(socket.getInputStream());
-
             in = socket.getInputStream();
             Scanner inp = new Scanner(in);
-
             String request;
-            
-  
             
             while ((request = inp.nextLine()) != null) {
                 
@@ -190,10 +174,6 @@ public class SocketServer extends Thread {
         List<SealedObject> test2 = encryp.encryptUserList(test);
         mapObjectOutputStream.writeObject(test2);
         mapObjectOutputStream.flush();
-        //listUser.clear();
-
-//        map.putAll(db.getUser());
-//            mapObjectOutputStream.writeObject(map);
     }
     
     public void sendListOfCases() throws IOException, IllegalBlockSizeException{
@@ -202,7 +182,7 @@ public class SocketServer extends Thread {
         List<SealedObject> test2 = encryp.encryptCaseList(test);
         mapObjectOutputStream.writeObject(test2);
         mapObjectOutputStream.flush();
-        listCase.clear();
+       // listCase.clear();
 
         
 //        mapObjectOutputStream.writeObject(listCase);
