@@ -30,10 +30,21 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.SealedObject;
 
+/**
+ *
+ * @author Kristian
+ */
 public class SocketServer extends Thread {
 
+    /**
+     *
+     */
     public static final int PORT_NUMBER = 8081;
     private Database db;
+
+    /**
+     *
+     */
     protected Socket socket;
     private ObjectInputStream oin;
     private ObjectOutputStream mapObjectOutputStream;
@@ -46,6 +57,9 @@ public class SocketServer extends Thread {
         start();
     }
     
+    /**
+     *
+     */
     public void run() {
         OutputStream out = null;
         encryp = new EnccryptionDecryption();
@@ -163,11 +177,19 @@ public class SocketServer extends Thread {
         }
     }
     
-    
+    /**
+     * Sends encryption key back to the client
+     * @throws IOException
+     */
     public void sendkey() throws IOException{
         mapObjectOutputStream.writeObject(encryp.getKey());
     }
     
+    /**
+     * Sends list of users back to the client
+     * @throws IOException
+     * @throws IllegalBlockSizeException
+     */
     public void sendListOfUseres () throws IOException, IllegalBlockSizeException{
         List<User> test = new ArrayList();
         test.addAll(db.getUser());
@@ -176,6 +198,11 @@ public class SocketServer extends Thread {
         mapObjectOutputStream.flush();
     }
     
+    /**
+     * Sends list of cases back to the client
+     * @throws IOException
+     * @throws IllegalBlockSizeException
+     */
     public void sendListOfCases() throws IOException, IllegalBlockSizeException{
         List<Case> test = new ArrayList();
         test.addAll(db.getCases());
@@ -192,6 +219,13 @@ public class SocketServer extends Thread {
 
     }
     
+    /**
+     * Sends list of cases from a specific user back to the client
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     */
     public void sendCaseFromAUser() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
         SealedObject a = (SealedObject) oin.readObject();
         Customer b = encryp.deccryptCustumer(a);
@@ -212,8 +246,13 @@ public class SocketServer extends Thread {
         
     }
     
-    
-    
+    /**
+     * Creates a user in the database
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     */
     public void getUser() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
         
         SealedObject a = (SealedObject) oin.readObject();
@@ -229,6 +268,12 @@ public class SocketServer extends Thread {
         }
     
    // skal mulig vis slettes da den ikke rigtig gøre noget 
+
+    /**
+     *
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public void getCase() throws IOException, ClassNotFoundException{
         SealedObject a = (SealedObject) oin.readObject();
         
@@ -238,7 +283,15 @@ public class SocketServer extends Thread {
 //        System.out.println(a.toString());
         
     }
-       public void DeleteCase() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
+
+    /**
+     * Deletes case in he database
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     */
+    public void DeleteCase() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
             SealedObject a = (SealedObject) oin.readObject();
             Case b = encryp.decryptCase(a);
             db.deleteCaseInCaseAndCreates(b);
@@ -247,7 +300,14 @@ public class SocketServer extends Thread {
        // System.out.println(a.toString());
     }
 
-       public void getMapOfUserAndCase() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
+    /**
+     * Sends map of user and case back to the client
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     */
+    public void getMapOfUserAndCase() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
           SealedObject ting = (SealedObject) oin.readObject();
           HomeMadeMap m = encryp.decryptHomeMadeMap(ting);
           HashMap<User,Case> a = new HashMap();
@@ -280,40 +340,78 @@ public class SocketServer extends Thread {
 //          db.doStuff((Customer) us, ca);
 //       }
        
-       public void edidtCase() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
+    /**
+     * Edits case in the database
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     */
+    public void edidtCase() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
           SealedObject d = (SealedObject) oin.readObject();
           Case a = encryp.decryptCase(d);
             // Case a = (Case) oin.readObject();
            db.editCase(a);
        }
        
-       
-       public void getAllNotEvaluatetCases() throws IOException, IllegalBlockSizeException{
+    /**
+     * Sends list of all not evaluated cases to the client
+     * @throws IOException
+     * @throws IllegalBlockSizeException
+     */
+    public void getAllNotEvaluatetCases() throws IOException, IllegalBlockSizeException{
            List<Case> notEval = db.getNotEvaluadedCase();
            List<SealedObject> ting = encryp.encryptCaseList(notEval);
            mapObjectOutputStream.writeObject(ting);
        }  
        
-       public void EvaluateCase() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
+    /**
+     * Evaluates case in the database
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     */
+    public void EvaluateCase() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
            SealedObject ting = (SealedObject) oin.readObject();
            Case a = encryp.decryptCase(ting);
         // Case a = (Case) oin.readObject();
            db.evaluateCaseAndAddToAuction(a);
        }
        
-       public void getAllEvaluatetCases() throws IOException, ClassNotFoundException, IllegalBlockSizeException{
+    /**
+     *  Sends list of all evaluated cases to the client
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws IllegalBlockSizeException
+     */
+    public void getAllEvaluatetCases() throws IOException, ClassNotFoundException, IllegalBlockSizeException{
            List<Case> eval = db.getEvaluetaCase();
            List<SealedObject> ting = encryp.encryptCaseList(eval);
            mapObjectOutputStream.writeObject(ting);
        } 
        
-       public void deleteUser() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
+    /**
+     * Deletes user in the database
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     */
+    public void deleteUser() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
            SealedObject ting = (SealedObject) oin.readObject();
            User a = encryp.decryptUser(ting);
            db.deleteUser(a);
        }
        
-       public void createTicket() throws IOException, ClassNotFoundException, BadPaddingException, IllegalBlockSizeException{
+    /**
+     * Creates ticket in the database
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws BadPaddingException
+     * @throws IllegalBlockSizeException
+     */
+    public void createTicket() throws IOException, ClassNotFoundException, BadPaddingException, IllegalBlockSizeException{
             SealedObject ting = (SealedObject) oin.readObject();
             HomeMadeMap noget = encryp.decryptHomeMadeMap(ting);
             HashMap<Customer,Ticket> crTicket = new HashMap();
@@ -345,7 +443,14 @@ public class SocketServer extends Thread {
 //          db.CustumerCreateTicket(ca, us);  
        }
        
-      public void sendAllCustumerTickets() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
+    /**
+     * Sends list of all tickets from a specific user to the client
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     */
+    public void sendAllCustumerTickets() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
           SealedObject ting = (SealedObject) oin.readObject();
           Customer cu = encryp.deccryptCustumer(ting);
 //          Customer cu = (Customer) oin.readObject();
@@ -354,14 +459,25 @@ public class SocketServer extends Thread {
           mapObjectOutputStream.writeObject(to);
       } 
       
-       
-      public void updateManufactor() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
+    /**
+     * Updates values of a manufacturer in the database
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     */
+    public void updateManufactor() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
           SealedObject ting = (SealedObject) oin.readObject();
           Manufacturer m = encryp.decryptManufacturer(ting);
           db.editManufatur(m);
       }
        
-      public void getAllTicketsforEmployee() throws IOException, IllegalBlockSizeException{
+    /**
+     * Sends list of all tickets to the client
+     * @throws IOException
+     * @throws IllegalBlockSizeException
+     */
+    public void getAllTicketsforEmployee() throws IOException, IllegalBlockSizeException{
           
           List<Ticket> a = db.getAllTicketsEmployee();
           List<SealedObject> ting = encryp.encryptTicketList(a);
@@ -370,23 +486,37 @@ public class SocketServer extends Thread {
           
       }
       
-      
-      public void employeeReplyTicket() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
+    /**
+     * Adds a reply from an employee to a ticket in the database
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     */
+    public void employeeReplyTicket() throws IOException, ClassNotFoundException, IllegalBlockSizeException, BadPaddingException{
           SealedObject ting = (SealedObject) oin.readObject();
 //          Ticket t = (Ticket) oin.readObject();
            Ticket t  = encryp.decryptTicket(ting);
           db.employeeReplyTicket(t);
       }
    
-       
-      public void getAllStufInauction() throws IOException, IllegalBlockSizeException{
+    /**
+     * Sends list of everything under auction to the client
+     * @throws IOException
+     * @throws IllegalBlockSizeException
+     */
+    public void getAllStufInauction() throws IOException, IllegalBlockSizeException{
           List<SealedObject>ting = encryp.encryptCaseList(db.getAllCasesInAction());
           mapObjectOutputStream.writeObject(ting);
           
       }
       
-      
-      public void updateBid() throws IOException, ClassNotFoundException{
+    /**
+     * Changes a bid on a case in the database
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public void updateBid() throws IOException, ClassNotFoundException{
           Case s = (Case)oin.readObject();
           db.updateBid(s);
       }
@@ -402,9 +532,10 @@ public class SocketServer extends Thread {
 //    }
 //       
        
-    
-    
-    
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         System.out.println("SocketServer Example");
         Database db = new Database();
