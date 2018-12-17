@@ -35,7 +35,8 @@ public class Database {
     private final String username = "ddrapuye";
     private final String password = "FdCxvGtgDcCFm0Jc2Oixndk3t9SGy8YF";
     
-     public Database() {
+
+    public Database() {
         try {
             Class.forName("org.postgresql.Driver");
             db = DriverManager.getConnection(this.url, this.username, this.password);
@@ -45,28 +46,10 @@ public class Database {
         }
     }
      
-     public String SQLTest(String i){
-         Statement a = null;
-         ResultSet øv = null;
-         String test = "";
-         try{
-             a = db.createStatement();
-             øv = a.executeQuery("select * from test where test = '" + i + "'");
-             while(øv.next()){
-                 test = øv.getString(2);
-             }
-         }
-         catch (Exception e){
-             
-         }
-         return test;
-     }
-       
-     
-     
-     
-     
-    // har noget at gøre med at få user
+    /**
+     * Adds all users to a list and returns it
+     * @return list of users
+     */
      
      
      public List<User> getUser(){
@@ -80,7 +63,10 @@ public class Database {
         return list;
     }
     
-    
+    /**
+     * Adds all admins to a list and returns it
+     * @return list of all admins
+     */
     private List<User> getAdmin(){
         Statement a = null;
         ResultSet øv = null;
@@ -103,7 +89,10 @@ public class Database {
         }
         return list;
     }
-     
+     /**
+      * Returns list of all manufaturers
+      * @return list of manufacturers
+      */
        private List<User> getManufacturer(){
         Statement a = null;
         ResultSet øv = null;
@@ -135,6 +124,10 @@ public class Database {
         }
         return list;
     }
+       /**
+        * Returns list of all customers
+        * @return list of customers
+        */
         private List<User> getCustomer(){
         Statement a = null;
         ResultSet øv = null;
@@ -166,7 +159,10 @@ public class Database {
         }
         return list;
     }
-    
+    /**
+     * Returns list of all employees
+     * @return List of employees
+     */
         private List<User> getEmployee(){
         Statement a = null;
         ResultSet øv = null;
@@ -188,17 +184,11 @@ public class Database {
 
         }
         return list;
-    }
-    
-        
-        
-        
-        
-        
-        
-        
-        // har får man cases
-        
+    }            
+     /**
+      * Adds all cases to a list
+      * @return list of cases
+      */   
         
         private List<Case> findCase(){
             
@@ -245,29 +235,32 @@ public class Database {
             return list;
         } 
         
-        public List<Case> getCases(){
+    /**
+     * Adds a list of acses to an arraylist
+     * @return list of cases
+     */
+    public List<Case> getCases(){
             List<Case> list = new ArrayList();
             list = findCase();
             return list;
         }
 
-
-        
-        
-        
-        
-        // hved ikke lige hvad dennne gør
+    /**
+     * ASsigns the caseID of a case to a
+     * @param caseid is the ID of a case
+     * @return a which has caseID assigned as value
+     */
         public Case insertIntoDb(Case caseid){
             Case a = caseid;
             return a;
             
         }
         
-        
-        
-        
-        
-        // her kan der oprettes burger
+
+    /**
+     * Creates a new employee in the database
+     * @param j is an employee
+     */
         
         public void createEmployee(Employee j) {
         Statement a = null;
@@ -281,6 +274,10 @@ public class Database {
         }
     }
         
+    /**
+     * Creates a new admin in the database
+     * @param j is an admin
+     */
     public void createAdmin(Admin j) {
         Statement a = null;
         ResultSet øv = null;
@@ -292,7 +289,11 @@ public class Database {
 
         }
     }
-            //der skal byttes om på pass og navne
+
+    /**
+     * Creates a new customer in the database
+     * @param j is a customer
+     */
           public void createCustumer(Customer j) {
         Statement a = null;
         ResultSet øv = null;
@@ -304,7 +305,12 @@ public class Database {
 
         }
     }
-        public void createManufacturer(Manufacturer j) {
+
+    /**
+     * Creates a new manufacturer in the database
+     * @param j is a manufacturer
+     */
+    public void createManufacturer(Manufacturer j) {
         Statement a = null;
         ResultSet øv = null;
        
@@ -316,7 +322,11 @@ public class Database {
         }
     }
            
-           public void createUser(User i){
+    /**
+     * Creates a user in the database
+     * @param i is a user
+     */
+    public void createUser(User i){
                if(i instanceof Employee){
                    createEmployee((Employee) i);
                }else if(i instanceof Manufacturer ){
@@ -329,14 +339,11 @@ public class Database {
                
            }
            
-           
-           
-           
-           
-        
-           
-      
-        // her oprettes der sager
+
+    /**
+     * Creates a case in the database
+     * @param g is a case
+     */
         public void createCase(Case g) {
         Statement a = null;
         ResultSet øv = null;
@@ -355,8 +362,12 @@ public class Database {
         }
     }
      
-        
-        public boolean checkIfEmailExist(Customer g){
+    /**
+     * Checks if a mail already is in the database
+     * @param g is a customer
+     * @return boolean
+     */
+    public boolean checkIfEmailExist(Customer g){
             Statement a = null;
             ResultSet øv = null;
             
@@ -376,7 +387,12 @@ public class Database {
             return false;
     }        
         
-        public void insertInToPercas(Customer aff, Case b){
+    /**
+     * Links cases to a customer
+     * @param aff is a customer
+     * @param b is a case
+     */
+    public void insertInToPercas(Customer aff, Case b){
         Statement a = null;
         ResultSet øv = null;
         try {
@@ -388,10 +404,11 @@ public class Database {
         }
     }
         
-        
-        
-        
-        public void deleteCase(Case g){
+    /**
+     * Deletes a case in the database
+     * @param g is a case
+     */
+    public void deleteCase(Case g){
             Statement a = null;
             ResultSet øv = null;
             
@@ -403,7 +420,11 @@ public class Database {
            }
         }
         
-        public void deleteCaseFromCreates(Case g){
+    /**
+     * deletes a case in the database
+     * @param g is a case
+     */
+    public void deleteCaseFromCreates(Case g){
             Statement a = null;
             ResultSet øv = null;
             
@@ -415,7 +436,11 @@ public class Database {
            }  
         }
         
-        public void deleteCasefromAction(Case g){
+    /**
+     * Deletes a case in the database
+     * @param g is a case
+     */
+    public void deleteCasefromAction(Case g){
             
               Statement a = null;
             ResultSet øv = null;
@@ -429,15 +454,21 @@ public class Database {
             
         }
         
-        
-        public void deleteCaseInCaseAndCreates(Case g){
+    /**
+     * deletes a case in several tables in the database
+     * @param g is a case
+     */
+    public void deleteCaseInCaseAndCreates(Case g){
             deleteCaseFromCreates(g);
             deleteCase(g);
             deleteCasefromAction(g);
         }
         
-        
-        public void editCase(Case g){
+    /**
+     * Updates the values for a specific case
+     * @param g is a case
+     */
+    public void editCase(Case g){
             Statement a = null;
             ResultSet øv = null;
             
@@ -451,23 +482,35 @@ public class Database {
             
         }
         
-       public void doStuff(Customer a, Case b){
+    /**
+     * checks if email exists, creates a case and inserts it into percas
+     * @param a is a customer
+     * @param b is a case
+     */
+    public void doStuff(Customer a, Case b){
           if(checkIfEmailExist(a)== true){
               createCase(b);
               insertInToPercas(a, b);
           } 
        }
         
-       
-       
-        public List<Case> getSpecificUserCaseList(Customer per){
+    /**
+     * Gets a list of cases for a specific user
+     * @param per is a customer
+     * @return list of cases
+     */
+    public List<Case> getSpecificUserCaseList(Customer per){
             List<Case> list = new ArrayList();
             list = getSpecificPersonCase(per);
             return list;
         }
 
-        
-        public List<Case> getSpecificPersonCase(Customer per){
+    /**
+     * Gets a specific case for a person
+     * @param per is a customer
+     * @return list of cases
+     */
+    public List<Case> getSpecificPersonCase(Customer per){
         Statement a = null;
         ResultSet øv = null;
         
@@ -515,9 +558,11 @@ public class Database {
            
        } 
       
-      
-      
-      public List<Case> getNotEvaluadedCase(){
+    /**
+     * Returns a list of all cases not evaluated
+     * @return list of cases
+     */
+    public List<Case> getNotEvaluadedCase(){
         Statement a = null;
         ResultSet øv = null;
       
@@ -554,7 +599,11 @@ public class Database {
           return list;
       }
            
-      public void EvaluateCase(Case f){
+    /**
+     * Updates a value for a case so it is now validated
+     * @param f is a case
+     */
+    public void EvaluateCase(Case f){
            Statement a = null;
            ResultSet øv = null;
           
@@ -567,16 +616,21 @@ public class Database {
             
         }
       }
-      public void evaluateCaseAndAddToAuction(Case f){
+
+    /**
+     * Evaluates a case and adds it to auction
+     * @param f is a case
+     */
+    public void evaluateCaseAndAddToAuction(Case f){
           EvaluateCase(f);
           addToAction(f);
       }
       
-      
-      
-      
-      
-      public void addToAction(Case f){
+    /**
+     * adds a case to auction
+     * @param f is a case
+     */
+    public void addToAction(Case f){
            Statement a = null;
            ResultSet øv = null;
           
@@ -588,21 +642,11 @@ public class Database {
             
         }
       }
-//      
-//      private void addTooAuction(Case f){
-//          Statement a = null;
-//           ResultSet øv = null;
-//          
-//           try{
-//            a = db.createStatement();
-//            øv = a.executeQuery("insert into approvedcase values('"+f.getCaseTitle()+"','"+f.getId()+"','"+f.getCaseBudget()+"','"+f.getDeadline()+"','"+f.getComponent()+"','"+f.getFreeText()+"')");
-// 
-//           }catch (Exception ex) {
-//            
-//        }
-//      }
-//      
-      // dennne metode skal laves om så den ikke taqer en case da det giver ingen mening <
+
+    /**
+     * Returns a list of all evaluated cases
+     * @return list of cases
+     */
       public List<Case> getEvaluetaCase(){
            Statement a = null;
         ResultSet øv = null;
@@ -641,19 +685,10 @@ public class Database {
           
       }
       
-//      private void deleteAllCustomCasesFromCreates(Customer ff){
-//        Statement a = null;
-//        ResultSet øv = null;
-//      
-//             try{
-//            a = db.createStatement();
-//            øv = a.executeQuery("delete from creates where email = '"+ff.getEmail()+"'");
-// 
-//           }catch (Exception ex) {
-//            
-//        }
-//          
-//      }
+      /**
+       * Deletes all cases for a specific customer
+       * @param ff is a customer
+       */
         private void deleteAllCustomCases(Customer ff){
             List<Case> list = getSpecificUserCaseList(ff);
             for (int i = 0; i < list.size(); i++) {
@@ -663,7 +698,10 @@ public class Database {
 
         
         
-      
+    /**
+     * Deletes a customer user
+     * @param f  is a customer
+     */
       private void deleteCustumerUser(Customer f){
         Statement a = null;
         ResultSet øv = null;
@@ -677,6 +715,10 @@ public class Database {
         }  
       }
       
+     /**
+      * Deletes an employee user
+      * @param e is an employee
+      */
       private void deleteEmployee(Employee e){
         Statement a = null;
         ResultSet øv = null;
@@ -689,7 +731,10 @@ public class Database {
         }    
       }
       
-      
+      /**
+       * Deletes a manufacturer
+       * @param m is a manufacturer
+       */
       private void deleteManufature(Manufacturer m){
         Statement a = null;
         ResultSet øv = null;
@@ -701,6 +746,10 @@ public class Database {
            }catch (Exception ex) {
         }  
       }
+      /**
+       * Deletes an admin user
+       * @param aa is an admin
+       */
       private void deleteAdmin(Admin aa){
         Statement a = null;
         ResultSet øv = null;
@@ -713,8 +762,11 @@ public class Database {
         }    
       }
       
-      
-      public void deleteUser(User f){
+    /**
+     * deletes a user
+     * @param f is an user
+     */
+    public void deleteUser(User f){
           
           if(f instanceof Customer){
               deleteAllCustomCases((Customer) f);
@@ -729,7 +781,10 @@ public class Database {
           }
       }
       
-      
+     /**
+      * Creates a ticket in the database
+      * @param t is a ticket
+      */ 
       private void CreateTicket(Ticket t){
         Statement a = null;
         ResultSet øv = null;
@@ -741,7 +796,11 @@ public class Database {
            }catch (Exception ex) {
         } 
       }
-
+      /**
+       * Inserts a user specific ticket into a table
+       * @param t is a ticket
+       * @param c is a customer
+       */
       private void insertIntoMakes(Ticket t, Customer c){
         Statement a = null;
         ResultSet øv = null;
@@ -754,15 +813,24 @@ public class Database {
         }  
       }
       
-
-      public void CustumerCreateTicket(Ticket t,Customer c){
+    /**
+     * Creates a ticket for a customer
+     * @param t is a ticket
+     * @param c is a customer
+     */
+    public void CustumerCreateTicket(Ticket t,Customer c){
           if(checkIfEmailExist(c) == true){
             CreateTicket(t);
             insertIntoMakes(t, c);  
           }
       }
       
-      public void insertIntoReply(Ticket t, Employee e){
+    /**
+     * Inserts a reply to a ticket from an employee
+     * @param t is a ticket
+     * @param e is an employee
+     */
+    public void insertIntoReply(Ticket t, Employee e){
         Statement a = null;
         ResultSet øv = null;
       
@@ -772,20 +840,13 @@ public class Database {
  
            }catch (Exception ex) {
         }  
-      }
-      
-//     public void updateTicket(){
-//        Statement a = null;
-//        ResultSet øv = null;
-//      
-//             try{
-//            a = db.createStatement();
-//            øv = a.executeQuery("insert into reply values ('"+t.getIssuenumber()+"','"+e.getUserName()+"')");
-// 
-//           }catch (Exception ex) {
-//        }  
-//     }
-//      
+      } 
+
+    /**
+     * Gets all tickets for a specific user
+     * @param c is a customer
+     * @return list of tickets
+     */
       public List<Ticket> getAlleTickets(Customer c){
           Statement a = null;
           ResultSet øv = null;
@@ -807,12 +868,11 @@ public class Database {
              
       }
       
-      
-      
-      
-      
-      
-      // manufacture dellen 
+
+    /**
+     * edits the values for a manufacturer in the database
+     * @param m is a manufacturer
+     */
       
          public void editManufatur(Manufacturer m){
             Statement a = null;
@@ -828,11 +888,11 @@ public class Database {
       
          }
       
-      
-      
-      
-         
-         public List<Ticket> getAllTicketsEmployee(){
+    /**
+     * returns a list of all tickets
+     * @return list of tickets
+     */
+    public List<Ticket> getAllTicketsEmployee(){
           Statement a = null;
           ResultSet øv = null;
           List<Ticket> list = new ArrayList();
@@ -853,10 +913,11 @@ public class Database {
              
          }
       
-      
-      
-      
-      public void employeeReplyTicket(Ticket t){
+    /**
+     * Adds a reply to a ticket from an employee
+     * @param t is a ticket
+     */
+    public void employeeReplyTicket(Ticket t){
             Statement a = null;
             ResultSet øv = null;
             
@@ -868,8 +929,11 @@ public class Database {
            }
       }
       
-      
-      public List<Case> getAllCasesInAction(){
+    /**
+     * Returns list of all cases in auction
+     * @return list of cases
+     */
+    public List<Case> getAllCasesInAction(){
             Statement a = null;
             ResultSet øv = null;
             List<Case> caseList = new ArrayList();
@@ -903,7 +967,10 @@ public class Database {
            }
             return caseList;
       }
-      
+      /**
+       * Updates a bid on a case
+       * @param f is a case
+       */
       private void updateBidInCases(Case f){
           Statement a = null;
             ResultSet øv = null;
@@ -917,7 +984,10 @@ public class Database {
       }
       
       
-      
+      /**
+       * Updates a bid on a case in auction
+       * @param f is a case
+       */
       private void updateBidInaucktion(Case f){
           Statement a = null;
             ResultSet øv = null;
@@ -930,20 +1000,16 @@ public class Database {
            }
       }
       
-      public void updateBid(Case f){
+    /**
+     * updates bid on a case
+     * @param f is a case
+     */
+    public void updateBid(Case f){
           updateBidInCases(f);
           updateBidInaucktion(f);
       }
       
-      
-      
-       
-      
-      
-      
-      
-      
-      public static void main(String[] args) {
+    public static void main(String[] args) {
         Database a = new Database();
        
         Case test = new Case ("ding","Case ID 1232","sdsds","fuck jul","  dd",true,"test");
